@@ -27,6 +27,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun TipCalculatorScreen() {
+    var amountText by remember { mutableStateOf("1000") }
+    var dishesText by remember { mutableStateOf("4") }
+    var tipPercent by remember { mutableIntStateOf(10) }
+    var showTotal by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -104,6 +108,29 @@ fun TipCalculatorScreen() {
             Text("Итого")
         }
     }
+}
+fun calculateTip(amount: Double, percent: Int): Double {
+    return amount * percent / 100.0
+}
+
+fun calculateDiscount(amount: Double, dishes: Int): Double {
+    val discountPercent = when {
+        dishes <= 0 -> 0
+        dishes <= 2 -> 3
+        dishes <= 5 -> 5
+        dishes <= 10 -> 7
+        else -> 10
+    }
+
+    return amount * discountPercent / 100.0
+}
+
+fun calculateTotal(
+    amount: Double,
+    tip: Double,
+    discount: Double
+): Double {
+    return amount + tip - discount
 }
 
 @Preview(showSystemUi = true)
