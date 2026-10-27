@@ -46,29 +46,8 @@ fun TipCalculatorScreen() {
     val tip = calculateTip(amount, tipPercent)
     val discount = calculateDiscount(amount, dishes)
     val total = calculateTotal(amount, tip, discount)
-    val discountOptions = listOf(
-        Triple("1–2 блюда — 3%", 3, dishes in 1..2),
-        Triple("3–5 блюд — 5%", 5, dishes in 3..5),
-        Triple("6–10 блюд — 7%", 7, dishes in 6..10),
-        Triple("Более 10 блюд — 10%", 10, dishes > 10)
-    )
-    discountOptions.forEach { (label, percent, selected) ->
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            RadioButton(
-                selected = selected,
-                onClick = null
-            )
-            Text(label)
-        }
-    }
 
-    val discountPercent = when {
-        dishes <= 0 -> 0
-        dishes <= 2 -> 3
-        dishes <= 5 -> 5
-        dishes <= 10 -> 7
-        else -> 10
-    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = {
@@ -148,15 +127,16 @@ fun TipCalculatorScreen() {
 
             Text("Скидка за количество блюд")
 
-            listOf(
-                "1–2 блюда — 3%",
-                "3–5 блюд — 5%",
-                "6–10 блюд — 7%",
-                "Более 10 блюд — 10%"
-            ).forEach { label ->
+            val discountOptions = listOf(
+                Triple("1–2 блюда — 3%", 3, dishes in 1..2),
+                Triple("3–5 блюд — 5%", 5, dishes in 3..5),
+                Triple("6–10 блюд — 7%", 7, dishes in 6..10),
+                Triple("Более 10 блюд — 10%", 10, dishes > 10)
+            )
+            discountOptions.forEach { (label, percent, selected) ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(
-                        selected = false,
+                        selected = selected,
                         onClick = null
                     )
                     Text(label)
@@ -166,17 +146,25 @@ fun TipCalculatorScreen() {
             Spacer(Modifier.height(8.dp))
 
             OutlinedTextField(
-                value = "",
+                value = if (showTotal) {
+                    "%.2f".format(total)
+                } else {
+                    "%.2f".format(discount)
+                },
                 onValueChange = {},
                 readOnly = true,
-                label = { Text("Скидка") },
+                label = {
+                    Text(if (showTotal) "Итоговая сумма" else "Скидка")
+                },
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(Modifier.height(12.dp))
 
             Button(
-                onClick = {},
+                onClick = {
+                    showTotal = true
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Итого")
