@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,8 +48,14 @@ fun TipCalculatorScreen() {
         Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = amountText,
+            onValueChange = {
+                amountText = it
+                showTotal = false
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Decimal
+            ),
             label = { Text("Сумма заказа") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -55,19 +63,28 @@ fun TipCalculatorScreen() {
         Spacer(Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = dishesText,
+            onValueChange = {
+                dishesText = it
+                showTotal = false
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number
+            ),
             label = { Text("Количество блюд") },
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(Modifier.height(16.dp))
 
-        Text("Чаевые: 10%")
+        Text("Чаевые: $tipPercent%")
 
         Slider(
-            value = 10f,
-            onValueChange = {},
+            value = tipPercent.toFloat(),
+            onValueChange = {
+                tipPercent = it.toInt()
+                showTotal = false
+            },
             valueRange = 0f..25f,
             steps = 4
         )
